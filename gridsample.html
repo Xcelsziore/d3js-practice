@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<html>
+<head>
+    <title>IP Address Allocation</title>
+    <script type="text/javascript" src="d3/d3.v3.js"></script>
+</head> 
+<body>   
+    <div id="D3lines">
+    	<button class="maps">Show Map</button>
+    </div>
+	<script type="text/javascript">
+ 
+	var width = 600;
+	var height = 600;
+ 
+	var lineGraph = d3.select("#D3lines")
+	    .append("svg:svg")
+	    .attr("width", width)    
+	    .attr("height", height); 
+ 
+	// To draw a line use the "svg:line" element.
+	// "svg:line" element requires 4 attributes (x1, y1, x2, and y2)
+	// (x1,y1) are coordinates of the starting point. 
+	// (x2,y2) are coordinates of the end point.
+	// You also need to specify the stroke color.
+ 
+	// Using for loop to draw multiple horizontal lines
+	for (var j=50; j <= width-50; j=j+50) {
+	    lineGraph.append("svg:line")
+	        .attr("x1", 50)
+	        .attr("y1", j)
+	        .attr("x2", width-50)
+	        .attr("y2", j)
+	        .style("stroke", "gray")
+	        .style("stroke-width", 2);            
+	};
+ 
+	// Using for loop to draw multiple vertical lines
+	for (var j=50; j <= height-50; j=j+50) {
+	    lineGraph.append("svg:line")
+	        .attr("x1", j)
+	        .attr("y1", 50)
+	        .attr("x2", j)
+	        .attr("y2", height-50)
+	        .style("stroke", "gray")
+	        .style("stroke-width", 2);            
+	};
+	
+	
+d3.select("button")
+    .on("click", function () {
+    return sortBars()
+});		
+		
+	</script>
+</body>
+</html>

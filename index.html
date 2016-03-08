@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<html>
+  <head>
+    <style>
+
+.q0 {fill: rgb(215, 48, 39);}
+.q1 {fill: rgb(244, 109, 67);}
+.q2 {fill: rgb(253, 174, 97);}
+.q3 {fill: rgb(254, 224, 144);}
+.q4 {fill: rgb(255, 255, 191);}
+.q5 {fill: rgb(224, 243, 248);}
+.q6 {fill: rgb(171, 217, 233);}
+.q7 {fill: rgb(116, 173, 209);}
+.q8 {fill: rgb(69, 117, 180);}
+
+.tooltip {
+    line-height: 1;
+    padding: 10px;
+    background: #8c8c8c;
+    color: #000080;
+    border-radius: 2px;
+    
+    span {
+        margin: 10px;
+        display: inline-block;
+    }
+}
+    
+        </style>
+    
+    <title>IP Address Allocation</title>
+  </head>
+  
+  <body>
+      <div id="chart"></div>
+      <script type="text/javascript" src="d3/d3.v3.js"></script>
+      <script src="http://d3js.org/d3.v3.min.js"></script>
+      <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+      
+       <script type="text/javascript">
+       
+          var dataset = [{
+                         "key":"0",
+                         "network": "10.0.0.0/30",
+                         "netmask": "255.255.255.252",
+                         "startaddress":"10.0.0.0",
+                         "endaddress":"10.0.0.3",
+                         "numIpaddresses":"4"
+                         },
+                         {
+                         "key":"1",
+                         "network": "10.0.0.4/30",
+                         "netmask": "255.255.255.252",
+                         "startaddress":"10.0.0.4",
+                         "endaddress":"10.0.0.10",
+                         "numIpaddresses":"7"
+                         },
+                         {
+                         "key":"2",
+                         "network": "10.0.0.11/30",
+                         "netmask": "255.255.255.252",
+                         "startaddress":"10.0.0.11",
+                         "endaddress":"10.0.0.18",
+                         "numIpaddresses":"8"
+                         },
+                         {
+                         "key":"3",
+                         "network": "10.0.0.19/30",
+                         "netmask": "255.255.255.252",
+                         "startaddress":"10.0.0.19",
+                         "endaddress":"10.0.0.21",
+                         "numIpaddresses":"3"
+                         },
+                         {
+                         "key":"4",
+                         "network": "10.0.0.22/30",
+                         "netmask": "255.255.255.252",
+                         "startaddress":"10.0.0.22",
+                         "endaddress":"10.0.0.26",
+                         "numIpaddresses":"5"
+                         }
+                         ];
+
+
+var tip = d3.tip().attr("class", "tooltip").html(function(d) {
+      return "<span style='bg-color:#CCCCCC;font-size:10;font-color:#555;opacity:.8;'>" + " Network:   " +d.network + "<br />" + " Start address: " + d.startaddress + "<br />" +" End address: " + d.endaddress+ "<br />" +" Number of Addresses:  " + d.numIpaddresses + "<br />" + "</span>";
+      })
+
+var data = [];
+dataset.forEach(function(d)
+                {
+                for (key = 0; key < 5; key++)
+                {
+                data.push({"key": key, "network": d["network"], "startaddress" : d["startaddress"], "endaddress" : d["endaddress"], "numIpaddresses" :d["numIpaddresses"]});
+                }
+                }
+                );
+                
+                var networkOrder = ["3", "4", "5", "7", "8"];
+                
+                var cellSize = 50,
+                cellBorder = 2;
+                height = 600,
+                width = 600;
+
+                
+                var yScale = d3.scale.ordinal()
+                .domain(d3.range(dataset.length))
+                .rangeRoundBands([0, height], 0.05);
+                
+                var xScale = d3.scale.ordinal()
+                .domain(d3.range(5))
+                .rangeRoundBands([0, width], 0.05);
+                
+                var color = d3.scale.quantize()
+                .domain([0, 4])
+                .range(d3.range(8).map(function(d) { return "q"+d; }));
+                
+                var grid = d3.select("#chart").append("svg")
+                .attr("width", width)
+                .attr("height", height)
+                .attr("class", "chart");
+                grid.call(tip);
+                
+                
+                var cells = grid.selectAll("rect")
+                .data(data)
+                .enter().append("svg:rect")
+                .attr("class", function(d){ return color(d.key); })
+                .attr("x", function(d) { return (d.key +1 )*cellSize; })
+                .attr("y", function(d) { return (networkOrder.indexOf(d.numIpaddresses))*cellSize;})
+                .attr("width", cellSize - cellBorder)
+                .attr("height", cellSize - cellBorder)
+                .on('mouseover', function(d) {
+                d3.select(this)
+                     .style('fill', '#f2f2f2');
+                    tip.show(d);
+                    })
+                    .on('mouseout', function(d) {
+                        d3.select(this)
+                        .style('fill', '');
+                        tip.hide(d);
+                        
+                        })
+                        .on('click', function() {
+                            console.log(d3.select(this));
+                            })
+                            .style("stroke", '#b3b3cc');
+                            
+        </script>
+  </body>
+</html>
